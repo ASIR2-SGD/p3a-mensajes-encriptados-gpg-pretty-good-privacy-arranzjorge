@@ -129,8 +129,24 @@ gpg --detach-sign mensaje.txt
 ```
 9.  **Mailevelope**
    1.  Importar clave privada
-   2.  Subir clave pública al keyserver de mailevelope
-   3.  Importar claves publicas
-   4.  Enviar un mensaje cifrado y descifrar mensaje.
+         Entramos en chorme y buscamos el addon de mailvelope, al añadirlo, podemos ir a la pestaña "Key Mangement". Aqui podemos subir nuestra clave compiadnola de un archvio .asc. 
+         Una vez subida quedara podremos ver que esta como "Default"
+         ![Imagen_mailvelope](./imagen_mv2.png)
 
- 
+   2.  Subir clave pública al keyserver de mailevelope
+         En el apartado "key Management" vamos a clicar en el boton "Import". Aqui podremos copiar directamente el codigo ascii de la clave que queremos añadir.
+         ![Imagen_mailvelope](./imagen_mv1.png)
+         Tambien podmeos ir al boton "Search" y buscar el nombre de el propietario de la clave o la clavedirectamente para así añadirla (Tienen que estar dentro de una cuenta d emailvelope).
+         ![Imagen_mailvelope](./imagen_mv3.png)
+
+   3.  Importar claves publicas
+         En el apartado "key Management" vamos a clicar en el boton "Import". Aqui podremos copiar directamente el codigo ascii de la clave que queremos añadir.
+         ![Imagen_mailvelope](./imagen_mv1.png)
+
+   4.  Enviar un mensaje cifrado y descifrar mensaje.
+         Simplemente vamos a lapartado "Encrypt" selecccioanmos el que lo va ha recibir (par aencriptar con su clave publica).
+         Luego podemos arrastrar el archvivo que deseamos encriptar y dejarlo en la caja.
+         Clicamos en el boton "Encrypt". Ahora encriptado lo podemos enviar por el medio deseado.
+         ![Imagen_mailvelope](./imagen_mv4.png)
+         Una vez llegue vamos a lapartado "Deccrypt" y arrastramso e l archvi cifrado que hemos recvido a la caja. Clicamos en el boton "Decrypt"
+         ![Imagen_mailvelope](./imagen_mv5+.png)
