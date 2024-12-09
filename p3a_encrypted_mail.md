@@ -148,5 +148,5 @@ gpg --detach-sign mensaje.txt
          Luego podemos arrastrar el archvivo que deseamos encriptar y dejarlo en la caja.
          Clicamos en el boton "Encrypt". Ahora encriptado lo podemos enviar por el medio deseado.
          ![Imagen_mailvelope](./imagen_mv4.png)
-         Una vez llegue vamos a lapartado "Deccrypt" y arrastramso e l archvi cifrado que hemos recvido a la caja. Clicamos en el boton "Decrypt"
-         ![Imagen_mailvelope](./imagen_mv5+.png)
+         Una vez llegue vamos al apartado "Decrypt" y arrastramso e l archvi cifrado que hemos recvido a la caja. Clicamos en el boton "Decrypt"
+         ![Imagen_mailvelope](./imagen_mv5.png)

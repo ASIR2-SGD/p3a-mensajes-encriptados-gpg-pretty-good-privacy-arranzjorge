@@ -27,12 +27,81 @@ El certificado digital que usaremos deberá estar firmado por una Autoridad Cert
 
 ## Desarrollo
 
-##Pasos previos
+### Pasos previos
 * Configurar VM con ip pública de aula
+    Comentamos la linea " config.vm.network "private_network", ip: "192.168.56.201" ". Depues de esto añadimos las siguientes  lineas:
+    ``` shell
+    config.vm.network "public_network",
+    :auto_config => true,
+    :bridge => "eno1",
+    :ip => "192.168.82.111"
+
+    ```
+    Luego ya hacemos "vagrant up".
+
 * Configurar NFS Server en cada máquina
+    Instlamos el nfs-server con el comando *apt isntall nfs-kernel-server*.
+    Creamos las carpetas que usaremos para subir y recoger nuestros certificados en /net/pki ademas debemos cambiar los permisos a nobody no group.
+    ``` shell
+    sudo chown nobody:nogroup /net/pki/
+    ```
+    Dentro de estas carpertas creamos los links de las carpetas issued y reqs  (se crean como si fueran externas).
+    ``` shell
+    sudo ln -s nfs://192.168.82.111:/home/vagrant/easy-rsa/pki/ /net/pki/
+    ```
+    Y en nuestra maquina los links de estas carpetas a la nuestra
+    ```
+    sudo ln -s ~/easy-rsa/pki/issued /net/pki/issued
+    ```
+
+    Ahora reiniciamos el servicio nfs (comando systemctl restart nfs-kernel-server).
+
+    Ahora para contactar con nuestro servidor CA para que pueda firmar nuestras requests. Creamos una carpeta en /nfs
+    ``` shell
+    sudo mkdir -p /nfs/vinicio-server
+    ```
+    Y ahora montamos su carpeta /net/pki en nuestro fichero /nfs/vinicio-server
+    ``` shell
+    sudo mount 192.168.82.112:/net/pki /nfs/vinicio-server/
+    ```
+    Para qeu se monte automaticamente modificasmos los archivo /etc/fstab
+    ``` shell
+    192.168.82.112:/net/pki/        /nfs/vinicio-server/    nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
+    ```
+    Otorgamso lso permisos que se requieran a las carpetas:
+    ```
+    sudo chmod 755 /net/pki/issued/
+    sudo chmod 775 /net/pki/reqs/
+    ```
+
+    Ahora copiamso el ca.crt a la carpeta pki y hacemos el coamndo para actualizar la lista de certificadores ca.
+    ```
+    sudo cp ~/easy-rsa/pki/ca.crt /net/pki/
+    sudo cp ./ca.crt /usr/local/share/ca-certificates/
+    sudo update-ca-certificates
+    ```
+
+    Despues instalamos openssl para poder pasar los reqs y recoger los ya firmados. Se instala con el comando "sudo apt install openssl".
+    Ahroa generamos el rsa .key para pedir que el CA nos firme.
+    ```
+    openssl genrsa -out jorge-srv.key
+    
+   
+    ```
+    Ahora creamos el archivo .req para pedir al CA que los firme.
+    ``` 
+    openssl req -new -key jorge-srv.key -out jorge-srv.req
+    openssl req -in jorge-srv.req -noout -subject
+    ```
+    Ahora copiamos el .req a la carpeta de red para qeu llegue al ca y asi lo firme. (damos premisos 777 -R a la carpeta /nfs/vinicio-server)
+    ```
+    sudo cp jorge-srv.req /nfs/vinicio-server/reqs
+    ```
+    Ahora el CA lo firmará y el cliente lo podra recuperar en issued.
+
 * Configurar NFS Client a CA_TEAM y CA_CENTRAL
 
-##Pasos CA
+### Pasos CA
 * Crear y configurar Certification Authority (CA Server)
 
 >[!NOTE]
@@ -41,7 +110,7 @@ El certificado digital que usaremos deberá estar firmado por una Autoridad Cert
 * Compartir certificado digital de la autoridad certificadora (ca.crt) 
 
 
-##Pasos solicitante
+### Pasos solicitante
 * Instalar  certificado digital de la autoridad certificadora en el sistema
 * Crear solicitud de certificado (CSR)
 * Enviar solicitud a CA
