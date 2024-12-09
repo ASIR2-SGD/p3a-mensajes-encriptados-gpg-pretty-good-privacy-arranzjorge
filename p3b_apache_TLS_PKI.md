@@ -49,9 +49,9 @@ El certificado digital que usaremos deberá estar firmado por una Autoridad Cert
     ``` shell
     sudo ln -s nfs://192.168.82.111:/home/vagrant/easy-rsa/pki/ /net/pki/
     ```
-    Y en nuestra maquina los links de estas carpetas a la nuestra
+    Y en nuestra maquina los links de estas carpetas a la nuestra (borrar issued y reqs de la ~/easy-rsa)
     ```
-    sudo ln -s ~/easy-rsa/pki/issued /net/pki/issued
+    sudo ln -s  /net/pki/issued ~/easy-rsa/pki/issued
     ```
 
     Ahora reiniciamos el servicio nfs (comando systemctl restart nfs-kernel-server).
@@ -68,6 +68,11 @@ El certificado digital que usaremos deberá estar firmado por una Autoridad Cert
     ``` shell
     192.168.82.112:/net/pki/        /nfs/vinicio-server/    nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0
     ```
+    Para qeu se COMPARTA TAMBIEN AUTOMATICAMENTE configuramos el archvio /etc/exports
+    ```
+    /net/pki/       192.168.82.0/24(insecure,rw,sync,no_subtree_check)
+    ```
+
     Otorgamso lso permisos que se requieran a las carpetas:
     ```
     sudo chmod 755 /net/pki/issued/
@@ -98,6 +103,17 @@ El certificado digital que usaremos deberá estar firmado por una Autoridad Cert
     sudo cp jorge-srv.req /nfs/vinicio-server/reqs
     ```
     Ahora el CA lo firmará y el cliente lo podra recuperar en issued.
+    ```
+    ./easyrsa sign-req server jorge-srv
+    ```
+
+    Crear req de firma:
+    ```
+    openssl genrsa -out sammy-server.key
+    openssl req -new -key sammy-server.key -out sammy-server.req
+    ```
+
+
 
 * Configurar NFS Client a CA_TEAM y CA_CENTRAL
 
